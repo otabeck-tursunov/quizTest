@@ -5,9 +5,12 @@ from django.db import models
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Quiz(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, related_name='quizzes')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     date_created = models.DateTimeField(auto_now_add=True)
 
@@ -19,8 +22,7 @@ class Quiz(models.Model):
 
 
 class Question(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.DO_NOTHING, related_name='questions')
-    date_updated = models.DateTimeField(auto_now=True)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
 
     SCALE = (
         (0, 'fundamental'),
@@ -36,13 +38,12 @@ class Question(models.Model):
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return self.text
 
 
 class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.DO_NOTHING, related_name='answers')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
-    date_updated = models.DateTimeField(auto_now=True)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
