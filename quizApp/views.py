@@ -91,8 +91,33 @@ class RandomQuestion(APIView):
             return Response({"message": "Question not found"}, status=status.HTTP_204_NO_CONTENT)
 
 
-# class RandomQuiz(APIView):
-#     def get(self, request):
+class RandomQuiz(APIView):
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="category_id",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+                description="by Category ID"
+            ),
+        ]
+    )
+    def get(self, request):
+        category_id = request.query_params.get('category_id')
+        quizzes = Quiz.objects.all()
+
+        if category_id:
+            if Category.objects.get(id=category_id):
+                quizzes = quizzes.filter(category__id=category_id)
+            else:
+                return Response({'error': 'Invalid Category ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if quizzes:
+            random_quiz = random.choice(quizzes)
+            serializer = QuizSerializer(random_quiz)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Quiz not found"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class AnswersByQuestion(APIView):
