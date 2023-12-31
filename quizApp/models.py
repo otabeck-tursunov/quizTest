@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -31,11 +32,12 @@ class Question(models.Model):
         (3, 'advanced'),
         (4, 'expert')
     )
-    # technique = models.IntegerField()
     text = models.CharField(max_length=255)
     difficulty = models.IntegerField(choices=SCALE, default=0)
+    seconds = models.PositiveSmallIntegerField(default=180, validators=[MinValueValidator(1), MaxValueValidator(3600)])
     date_created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.text
@@ -48,3 +50,4 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.text
+

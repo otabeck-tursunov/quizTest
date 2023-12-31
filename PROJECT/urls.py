@@ -17,7 +17,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('quizApp.urls')),
+    path('api/', include('quizApp.urls')),
 
-    path('doc/', schema_view.with_ui('swagger', cache_timeout=0))
+    # Swagger
+    path('', schema_view.with_ui('swagger', cache_timeout=0))
 ]
